@@ -23,13 +23,22 @@ services:
       - -c
       - deadlock_timeout=1s
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./db/docker/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh:ro
+      - ./db/schema:/schema:ro
+      - ./db/seed:/seed:ro
       - postgresData:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      test:
+        - CMD-SHELL
+        - >-
+          pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -q
+          && psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -tAc
+          "SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE n.nspname = 'public' AND c.relname = 'clinics'" | grep -qx 1
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 40s
     restart: unless-stopped
 volumes:
   postgresData:
