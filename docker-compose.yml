@@ -1,0 +1,35 @@
+name: medicitas
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgresDB
+    ports:
+      - "${POSTGRES_HOST_PORT}:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - MEDICITAS_OWNER_PASSWORD=${MEDICITAS_OWNER_PASSWORD}
+      - MEDICITAS_PLATFORM_PASSWORD=${MEDICITAS_PLATFORM_PASSWORD}
+      - MEDICITAS_CLINIC_ADMIN_PASSWORD=${MEDICITAS_CLINIC_ADMIN_PASSWORD}
+      - MEDICITAS_RECEPTION_PASSWORD=${MEDICITAS_RECEPTION_PASSWORD}
+      - MEDICITAS_PROFESSIONAL_PASSWORD=${MEDICITAS_PROFESSIONAL_PASSWORD}
+    command:
+      - postgres
+      - -c
+      - timezone=UTC
+      - -c
+      - log_lock_waits=on
+      - -c
+      - deadlock_timeout=1s
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgresData:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+volumes:
+  postgresData:
