@@ -208,6 +208,7 @@ cython_debug/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
+
 # Ruff stuff:
 .ruff_cache/
 
@@ -226,3 +227,4 @@ __marimo__/
 CLAUDE.md
 PY-Etapa1-OLTP.md
 docs/
+.vscode/
