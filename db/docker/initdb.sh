@@ -72,9 +72,6 @@ medicitasInitdb() {
     if [ -d "$seedDir" ]; then
         for file in "$seedDir"/*.sql; do
             [ -e "$file" ] || continue
-            # Un archivo de semilla todavia vacio -- o con solo comentarios,
-            # que es como nace -- es legitimo: el esquema arranca igual y el
-            # hueco esta listo para llenarse.
             if ! grep -qvE '^[[:space:]]*(--.*)?$' "$file"; then
                 echo "Initdb.sh ERROR: seed $(basename "$file") has no statements, skipping"
                 continue

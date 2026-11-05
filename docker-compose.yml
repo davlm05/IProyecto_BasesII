@@ -31,8 +31,8 @@ services:
       test:
         - CMD-SHELL
         - >-
-          pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -q
-          && psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -tAc
+          pg_isready -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -q
+          && psql -h 127.0.0.1 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -tAc
           "SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
           WHERE n.nspname = 'public' AND c.relname = 'clinics'" | grep -qx 1
       interval: 5s
