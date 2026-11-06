@@ -32,6 +32,20 @@ medicitasInitdb() {
         return 1
     fi
 
+	echo "Initdb.sh INFO: Creating keycloak database..."
+
+    if ! psql \
+        --username "$POSTGRES_USER" \
+        --dbname postgres \
+        -tAc "SELECT 1 FROM pg_database WHERE datname='keycloakDB'" \
+        | grep -q 1; then
+
+        psql \
+          --username "$POSTGRES_USER" \
+          --dbname postgres \
+          -c "CREATE DATABASE keycloakDB;"
+    fi
+
     applyAsSuperuser() {
         psql -v ON_ERROR_STOP=1 --no-psqlrc \
              --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" "$@"
