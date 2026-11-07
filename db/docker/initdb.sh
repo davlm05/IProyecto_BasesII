@@ -1,8 +1,6 @@
-#!/bin/bash
 # =============================================================================
-# MediCitas - Arranque de la base de datos relacional
+# MediCitas - Script de arranque y carga de datos
 # =============================================================================
-
 medicitasInitdb() {
     
     local schemaDir="${MEDICITAS_SCHEMA_DIR:-/schema}"

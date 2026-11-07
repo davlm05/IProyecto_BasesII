@@ -1756,5 +1756,319 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "clients": [
+    {
+      "clientId": "medicitasApi",
+      "name": "MediCitas API",
+      "description": "Client de la aplicacion MediCitas. Publico y con direct access grants habilitado para que las pruebas y la demostracion puedan pedir un token con usuario y contrasena en una sola llamada.",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "fullScopeAllowed": true,
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email",
+        "basic"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "protocolMappers": [
+        {
+          "name": "medicitasApiAudience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "medicitasApi",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "00000000-0010-0000-0000-000000000001",
+      "username": "platformAdmin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Plataforma",
+      "email": "platformadmin@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "platformAdmin"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "11111111-0010-0000-0000-000000000001",
+      "username": "santaLuciaAdmin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Santa Lucia",
+      "email": "santaluciaadmin@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "clinicAdmin"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "11111111-0010-0000-0000-000000000002",
+      "username": "santaLuciaReception",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Recepcion",
+      "lastName": "Santa Lucia",
+      "email": "santaluciareception@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "reception"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "11111111-0010-0000-0000-000000000003",
+      "username": "santaLuciaDoctorVargas",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Maria Jose",
+      "lastName": "Vargas Urena",
+      "email": "santaluciadoctorvargas@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "11111111-0010-0000-0000-000000000004",
+      "username": "santaLuciaDoctorSolano",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Andres",
+      "lastName": "Solano Picado",
+      "email": "santaluciadoctorsolano@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "22222222-0010-0000-0000-000000000001",
+      "username": "monteverdeAdmin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Monteverde",
+      "email": "monteverdeadmin@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "clinicAdmin"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "22222222-0010-0000-0000-000000000002",
+      "username": "monteverdeReception",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Recepcion",
+      "lastName": "Monteverde",
+      "email": "monteverdereception@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "reception"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "22222222-0010-0000-0000-000000000003",
+      "username": "monteverdeDoctorJimenez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Carlos",
+      "lastName": "Jimenez Chaves",
+      "email": "monteverdedoctorjimenez@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "22222222-0010-0000-0000-000000000004",
+      "username": "monteverdeDoctorRojas",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Daniela",
+      "lastName": "Rojas Montero",
+      "email": "monteverdedoctorrojas@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "33333333-0010-0000-0000-000000000001",
+      "username": "guanacasteAdmin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Guanacaste",
+      "email": "guanacasteadmin@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "clinicAdmin"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "33333333-0010-0000-0000-000000000002",
+      "username": "guanacasteReception",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Recepcion",
+      "lastName": "Guanacaste",
+      "email": "guanacastereception@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "reception"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "33333333-0010-0000-0000-000000000003",
+      "username": "guanacasteDoctorHernandez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Silvia",
+      "lastName": "Hernandez Leiva",
+      "email": "guanacastedoctorhernandez@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "33333333-0010-0000-0000-000000000004",
+      "username": "guanacasteDoctorMurillo",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Jose Pablo",
+      "lastName": "Murillo Castro",
+      "email": "guanacastedoctormurillo@medicitas.test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medicitasDev",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "professional"
+      ],
+      "clientRoles": {}
+    }
+  ]
 }

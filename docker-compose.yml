@@ -40,7 +40,9 @@ services:
       retries: 5
       start_period: 40s
     restart: unless-stopped
-  # *******************************************
+  # ---------------------------------------------------------------------------
+  # keycloak
+  # ---------------------------------------------------------------------------
   keycloakService:
     image: quay.io/keycloak/keycloak:26.0
     container_name: keycloakService
@@ -63,6 +65,35 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
+  # ---------------------------------------------------------------------------
+  # medicitasApi
+  # ---------------------------------------------------------------------------
+  medicitasApi:
+    build: .
+    image: medicitas-api:local
+    container_name: medicitasApi
+    ports:
+      - "${MEDICITAS_API_HOST_PORT}:8000"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      MEDICITAS_DB_HOST: ${MEDICITAS_DB_HOST}
+      MEDICITAS_DB_PORT: ${MEDICITAS_DB_PORT}
+      MEDICITAS_DB_POOL_SIZE: ${MEDICITAS_DB_POOL_SIZE}
+      MEDICITAS_PLATFORM_PASSWORD: ${MEDICITAS_PLATFORM_PASSWORD}
+      MEDICITAS_CLINIC_ADMIN_PASSWORD: ${MEDICITAS_CLINIC_ADMIN_PASSWORD}
+      MEDICITAS_RECEPTION_PASSWORD: ${MEDICITAS_RECEPTION_PASSWORD}
+      MEDICITAS_PROFESSIONAL_PASSWORD: ${MEDICITAS_PROFESSIONAL_PASSWORD}
+      KEYCLOAK_ISSUER: ${KEYCLOAK_ISSUER}
+      KEYCLOAK_JWKS_URL: ${KEYCLOAK_JWKS_URL}
+      KEYCLOAK_AUDIENCE: ${KEYCLOAK_AUDIENCE}
+      MEDICITAS_RESERVATION_MAX_RETRIES: ${MEDICITAS_RESERVATION_MAX_RETRIES}
+      MEDICITAS_LOG_LEVEL: ${MEDICITAS_LOG_LEVEL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloakService:
+        condition: service_started
+    restart: unless-stopped
 volumes:
   postgresData:
+  
