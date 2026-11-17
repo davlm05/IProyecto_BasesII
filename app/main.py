@@ -10,6 +10,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config import loadConfig
 from app.db.connectionPools import ConnectionPoolRegistry
+from app.cache.redisClient import RedisClientRegistry
 from app.errors import (
     DomainError,
     INTERNAL_ERROR,
@@ -54,6 +55,8 @@ async def applicationLifespan(application: FastAPI):
 
     pools = ConnectionPoolRegistry(config)
     pools.openAllPools()
+    redisRegistry = RedisClientRegistry(config)
+    redisRegistry.openRedisClient()
 
     application.state.config = config
     application.state.pools = pools

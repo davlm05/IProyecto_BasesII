@@ -2,6 +2,8 @@ from datetime import date, datetime, timedelta, timezone
 
 from psycopg import Connection
 
+from app.cache import redisTransactions
+from app.cache.redisClient import RedisClientRegistry
 from app.db.connectionPools import ConnectionPoolRegistry
 from app.db.transaction import openTenantTransaction
 from app.errors import DomainError, RESOURCE_NOT_FOUND
@@ -86,11 +88,21 @@ def calculateProfessionalAvailability(
 
 def getProfessionalAvailability(
     pools: ConnectionPoolRegistry,
+    redisRegistry: RedisClientRegistry,
     requestContext: RequestContext,
     professionalID: str,
     serviceID: str,
     targetDate: date,
 ) -> dict:
+    
+    paramsRedis = {"professionalID": professionalID,"serviceID": serviceID,"targetDate": targetDate.isoformat(),}
+    client = redisRegistry.getClient()
+    
+    # Se intenta recuperar de Redis
+    cachedKey = redisTransactions.getKey(client, paramsRedis)
+    if cachedKey is not None:
+        return cachedKey
+    
     with openTenantTransaction(pools, requestContext) as connection:
         durationMinutes = availabilityRepository.findServiceDurationMinutes(
             connection, serviceID
@@ -113,14 +125,17 @@ def getProfessionalAvailability(
             connection, professionalID, serviceID, targetDate, durationMinutes
         )
 
-        return {
+        resultado = {
             "professionalID": professionalID,
             "professionalName": professional["fullName"],
             "serviceID": serviceID,
             "durationMinutes": durationMinutes,
-            "targetDate": targetDate,
+            "targetDate": targetDate.isoformat(),
             "availableSlots": availableSlots,
         }
+        
+    redisTransactions.saveKey(client, paramsRedis, resultado)
+    return resultado
 
 
 def getServiceAvailability(

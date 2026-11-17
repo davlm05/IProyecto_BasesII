@@ -1,5 +1,7 @@
 from datetime import date, datetime, time
 
+from app.cache import redisTransactions
+from app.cache.redisClient import RedisClientRegistry
 from app.db.connectionPools import ConnectionPoolRegistry
 from app.db.transaction import openTenantTransaction
 from app.errors import DomainError, FORBIDDEN_NOT_OWN_RESOURCE, RESOURCE_NOT_FOUND
@@ -25,12 +27,15 @@ def _rejectIfNotOwnProfessional(
 # =============================================================================
 def createWorkingHour(
     pools: ConnectionPoolRegistry,
+    redisRegistry: RedisClientRegistry,
     requestContext: RequestContext,
     professionalID: str,
     weekday: int,
     startTimeLocal: time,
     endTimeLocal: time,
 ) -> dict:
+    client = redisRegistry.getClient()
+    
     _rejectIfNotOwnProfessional(requestContext, professionalID)
 
     with openTenantTransaction(pools, requestContext) as connection:
@@ -42,7 +47,7 @@ def createWorkingHour(
                 RESOURCE_NOT_FOUND, "El profesional no existe en su clinica."
             )
 
-        return scheduleRepository.insertWorkingHour(
+        resultado = scheduleRepository.insertWorkingHour(
             connection,
             clinicID=requestContext.clinicID,
             professionalID=professionalID,
@@ -50,9 +55,9 @@ def createWorkingHour(
             startTimeLocal=startTimeLocal,
             endTimeLocal=endTimeLocal,
         )
-
-    # Al cambiar el horario cambia la disponibilidad futura: aqui habra que
-    # invalidar la cache del profesional cuando exista el modulo 6.
+    # Se invalidan los datos de la cache para asegurar consistencia.
+    redisTransactions.deleteKey(client, professionalID)
+    return resultado
 
 
 def listWorkingHours(
@@ -78,19 +83,21 @@ def deleteWorkingHour(
         raise DomainError(
             RESOURCE_NOT_FOUND, "El bloque de horario no existe o no es suyo."
         )
-
+        
 
 # =============================================================================
 # RF6 - Bloqueos de agenda
 # =============================================================================
 def createScheduleBlock(
     pools: ConnectionPoolRegistry,
+    redisRegistry: RedisClientRegistry,
     requestContext: RequestContext,
     professionalID: str,
     startAt: datetime,
     endAt: datetime,
     reason: str,
 ) -> dict:
+    client = redisRegistry.getClient()
     _rejectIfNotOwnProfessional(requestContext, professionalID)
 
     with openTenantTransaction(pools, requestContext) as connection:
@@ -112,8 +119,9 @@ def createScheduleBlock(
             userID=requestContext.userID,
         )
 
-    # Invalidar la cache de disponibilidad del profesional para los dias que
-    # abarca el bloqueo, cuando exista el modulo 6.
+    # Se invalidan los datos de la cache para asegurar consistencia.
+    redisTransactions.deleteKey(client, professionalID)
+    return resultado
 
 
 def listScheduleBlocks(

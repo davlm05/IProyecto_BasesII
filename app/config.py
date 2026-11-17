@@ -32,6 +32,9 @@ class ApplicationConfig:
     oidcAudience: str
     reservationMaxRetries: int
     logLevel: str
+    redisHost: str
+    redisPort: int
+    redisDB: int
 
 # -----------------------------------------------------------------------------
 # Traduccion rol del dominio -> perfil de base de datos
@@ -81,4 +84,7 @@ def loadConfig() -> ApplicationConfig:
             readOptionalVariable("MEDICITAS_RESERVATION_MAX_RETRIES", "3")
         ),
         logLevel=readOptionalVariable("MEDICITAS_LOG_LEVEL", "info"),
+        redisHost=readOptionalVariable("REDIS_HOST", "redisCache"),
+        redisPort=int(readOptionalVariable("REDIS_PORT", "6379")),
+        redisDB=int(readOptionalVariable("REDIS_DB", "0")),
     )
