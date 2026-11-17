@@ -51,7 +51,23 @@ def listPatients(
     searchText: str | None,
 ) -> list[dict]:
     with openTenantTransaction(pools, requestContext) as connection:
-        return patientRepository.listPatients(connection, searchText)
+        patients = patientRepository.listPatients(connection, searchText)
+
+        auditService.recordAction(
+            connection,
+            requestContext,
+            auditActionPK=auditService.READ_PATIENT_CONTACT,
+            entityType="patients",
+            entityID=None,
+            patientID=None,
+            metadata={
+                "operation": "listPatients",
+                "hasSearchText": searchText is not None,
+                "patientCount": len(patients),
+            },
+        )
+
+        return patients
 
 
 def getPatient(
