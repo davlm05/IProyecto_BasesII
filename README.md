@@ -104,6 +104,10 @@ Durante esta etapa se emplearon herramientas de inteligencia artificial como apo
 
    - Apoyo para el desarrollo de pruebas automatizadas.
    - Análisis de bugs o fallos durante la ejecución de código del proyecto, revisando como interactuan los distintos servicios de PostgreSQL, Redis, Docker Compose y Keycloak.
-   - Se utilizó como apoyo para la escritura correcta y estructurada del README.MD
+   - Se utilizó como apoyo para la redacción correcta y estructurada del archivo README.md.
+   - Sirvió de apoyo para la escritura de la documentación del código.
+   - Se utilizó para adaptar los scripts DDL a PostgreSQL.
+   - Se empleó como apoyo para la depuración del código.
+   - Aunque la mayor parte del código fue generado con inteligencia artificial, el grupo se encargó de guiar el proceso de forma cercana y supervisada, tomando todas las decisiones relevantes y asegurando que la IA no asumiera elecciones cruciales para el desarrollo del proyecto. Asimismo, se utilizó como herramienta de consulta para el diseño del esquema de la base de datos y la arquitectura de la API; no obstante, todas las decisiones finales fueron tomadas por los integrantes, limitando el uso de la IA a aclarar dudas y proponer mejoras de diseño.
 
 Todas las pruebas fueron ejecutadas manualmente en el entorno local y se verificó su comportamiento contra los servicios reales de Docker Compose, PostgreSQL y Keycloak. Las decisiones finales sobre la arquitectura, la adaptación al código existente y la validación de los resultados fueron realizadas por el grupo.
