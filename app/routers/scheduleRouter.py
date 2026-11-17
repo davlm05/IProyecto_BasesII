@@ -42,6 +42,7 @@ def createWorkingHour(
 ):
     return scheduleService.createWorkingHour(
         request.app.state.pools,
+        request.app.state.redisRegistry,
         requestContext,
         professionalID=professionalID,
         weekday=createWorkingHourRequest.weekday,
@@ -80,7 +81,7 @@ def deleteWorkingHour(
     ),
 ):
     scheduleService.deleteWorkingHour(
-        request.app.state.pools, requestContext, workingHourID
+        request.app.state.pools, requestContext, workingHourID,  redisRegistry=request.app.state.redisRegistry
     )
 
 
@@ -102,6 +103,7 @@ def createScheduleBlock(
 ):
     return scheduleService.createScheduleBlock(
         request.app.state.pools,
+        request.app.state.redisRegistry,
         requestContext,
         professionalID=createScheduleBlockRequest.professionalID,
         startAt=createScheduleBlockRequest.startAt,
@@ -161,7 +163,7 @@ def deleteScheduleBlock(
     ),
 ):
     scheduleService.deleteScheduleBlock(
-        request.app.state.pools, requestContext, scheduleBlockID
+        request.app.state.pools, requestContext, scheduleBlockID, redisRegistry=request.app.state.redisRegistry
     )
 
 
@@ -188,6 +190,7 @@ def getProfessionalAvailability(
 ):
     return availabilityService.getProfessionalAvailability(
         request.app.state.pools,
+        request.app.state.redisRegistry,
         requestContext,
         professionalID=professionalID,
         serviceID=serviceID,

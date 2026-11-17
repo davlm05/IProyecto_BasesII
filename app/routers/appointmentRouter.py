@@ -64,6 +64,7 @@ def reserveAppointment(
         professionalID=createAppointmentRequest.professionalID,
         serviceID=createAppointmentRequest.serviceID,
         startAt=createAppointmentRequest.startAt,
+        redisRegistry=request.app.state.redisRegistry,
     )
 
 
@@ -97,6 +98,7 @@ def rescheduleAppointment(
         appointmentID=appointmentID,
         newStartAt=rescheduleAppointmentRequest.startAt,
         newProfessionalID=rescheduleAppointmentRequest.professionalID,
+        redisRegistry=request.app.state.redisRegistry,
     )
 
 
@@ -121,6 +123,7 @@ def cancelAppointment(
         requestContext,
         appointmentID=appointmentID,
         cancellationReason=cancelAppointmentRequest.cancellationReason,
+        redisRegistry=request.app.state.redisRegistry,
     )
 
 

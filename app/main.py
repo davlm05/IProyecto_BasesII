@@ -57,6 +57,7 @@ async def applicationLifespan(application: FastAPI):
     pools.openAllPools()
     redisRegistry = RedisClientRegistry(config)
     redisRegistry.openRedisClient()
+    application.state.redisRegistry = redisRegistry
 
     application.state.config = config
     application.state.pools = pools

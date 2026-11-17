@@ -120,3 +120,5 @@ GRANT EXECUTE ON FUNCTION "auditGenesisHash"(uuid)      TO "medicitasClinicAdmin
 GRANT EXECUTE ON FUNCTION "auditRowHash"(text, bytea)   TO "medicitasClinicAdmin";
 GRANT EXECUTE ON FUNCTION "auditCanonicalPayload"(uuid, bigint, timestamptz, uuid, text, text, text, uuid, uuid, uuid, jsonb)
                                                         TO "medicitasClinicAdmin";
+GRANT EXECUTE ON FUNCTION public."timeRange"(time, time, text)
+TO "medicitasClinicAdmin", "medicitasProfessional";

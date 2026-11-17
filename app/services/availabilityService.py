@@ -95,7 +95,7 @@ def getProfessionalAvailability(
     targetDate: date,
 ) -> dict:
     
-    paramsRedis = {"professionalID": professionalID,"serviceID": serviceID,"targetDate": targetDate.isoformat(),}
+    paramsRedis = {"clinicID": str(requestContext.clinicID),"professionalID": str(professionalID),"serviceID": str(serviceID),"targetDate": targetDate.isoformat(),}
     client = redisRegistry.getClient()
     
     # Se intenta recuperar de Redis

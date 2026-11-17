@@ -37,16 +37,18 @@ def listWorkingHours(connection: Connection, professionalID: str) -> list[dict]:
     return cursor.fetchall()
 
 
-def deleteWorkingHour(connection: Connection, workingHourID: str) -> int:
-
+def deleteWorkingHour(connection: Connection, workingHourID: str) -> str | None:
     cursor = connection.execute(
         """
         DELETE FROM "workingHours"
          WHERE "workingHourID" = %s
+        RETURNING "professionalID"
         """,
         (workingHourID,),
     )
-    return cursor.rowcount
+
+    fila = cursor.fetchone()
+    return str(fila["professionalID"]) if fila else None
 
 
 # =============================================================================

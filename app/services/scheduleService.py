@@ -73,17 +73,24 @@ def deleteWorkingHour(
     pools: ConnectionPoolRegistry,
     requestContext: RequestContext,
     workingHourID: str,
+    redisRegistry: RedisClientRegistry,
 ) -> None:
     with openTenantTransaction(pools, requestContext) as connection:
-        deletedRowCount = scheduleRepository.deleteWorkingHour(
+        professionalID = scheduleRepository.deleteWorkingHour(
             connection, workingHourID
         )
 
-    if deletedRowCount == 0:
-        raise DomainError(
-            RESOURCE_NOT_FOUND, "El bloque de horario no existe o no es suyo."
-        )
-        
+        if professionalID is None:
+            raise DomainError(
+                RESOURCE_NOT_FOUND,
+                "El bloque de horario no existe o no es suyo.",
+            )
+
+    # Invalidar después de confirmar la eliminación.
+    redisTransactions.deleteKey(
+        redisRegistry.getClient(),
+        professionalID,
+    )
 
 # =============================================================================
 # RF6 - Bloqueos de agenda
@@ -109,7 +116,7 @@ def createScheduleBlock(
                 RESOURCE_NOT_FOUND, "El profesional no existe en su clinica."
             )
 
-        return scheduleRepository.insertScheduleBlock(
+        resultado = scheduleRepository.insertScheduleBlock(
             connection,
             clinicID=requestContext.clinicID,
             professionalID=professionalID,
@@ -160,6 +167,7 @@ def deleteScheduleBlock(
     pools: ConnectionPoolRegistry,
     requestContext: RequestContext,
     scheduleBlockID: str,
+    redisRegistry: RedisClientRegistry,
 ) -> None:
     with openTenantTransaction(pools, requestContext) as connection:
         scheduleBlock = scheduleRepository.findScheduleBlockByID(
@@ -180,3 +188,7 @@ def deleteScheduleBlock(
 
     if deletedRowCount == 0:
         raise DomainError(RESOURCE_NOT_FOUND, "El bloqueo no existe o no es suyo.")
+    redisTransactions.deleteKey(
+        redisRegistry.getClient(),
+        str(scheduleBlock["professionalID"]),
+    )

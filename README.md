@@ -48,6 +48,55 @@ El repositorio de GitHub se debe clonar en su entorno local.
    docker compose down -v
    ```
 
+## Pruebas automatizadas
+
+El proyecto cuenta con una suite de pruebas automaatizadas en python usando unittest. Para verificar el correcto funcionamiento de las diferentes partes de la base de datos, seguridad y concurrencia.
+
+### Requisitos de la prueba
+1. Contar con docker y Python.
+2.Configurar el env a partir de .env.example
+3.Iniciar los servicios con docker
+4.Crear el entrono virtual de python y tener las dependencias
+
+En la carpeta con linea de comandos:
+
+Crear el entorno virtual
+
+```bash
+py -3.13 -m venv .venv
+ ```
+
+Instalar dependencias
+ ```bash
+  .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+ ```
+
+ Para ejecutar la suite
+ ```bash
+ .\.venv\Scripts\python.exe -m unittest discover -s tests -p"test_*.py" -v
+ ```
+Este comando ejecuta las pruebas generales del proyecto. Las tres pruebas que realizan operaciones directas de integridad sobre PostgreSQL se omiten de forma predeterminada.
+
+Para habilitar todas las pruebas en una base de datos local de desarrollo, ejecutar primero:
+
+ ```bash
+set RUN_AUDIT_DB_TESTS=1
+ ```
+Y ejecutar la suite.
+
+| Archivo | Cantidad | Funcionalidad verificada |
+|---|---:|---|
+| `test_disponibilidad.py` | 4 | Cálculo de horarios disponibles, intervalos ocupados y espacios consecutivos. |
+| `test_transacciones.py` | 4 | Reintentos ante conflictos de serialización y bloqueos mutuos. |
+| `test_seguridad_api.py` | 5 | Autenticación, tokens inválidos y permisos de acceso. |
+| `test_aislamiento.py` | 4 | Aislamiento de información entre clínicas. |
+| `test_citas_api.py` | 13 | Reservas, cancelaciones, reprogramaciones, concurrencia y restricciones de citas. |
+| `test_auditoria.py` | 4 | Generación, consulta, aislamiento e integridad de auditoría. |
+| `test_integridad_auditoria.py` | 3 | Protección contra modificaciones de auditoría y validación de campos inmutables. |
+| `test_redis.py` | 6 | Almacenamiento, expiración, aislamiento e invalidación de caché. |
+| `test_redis_fallos.py` | 1 | Comportamiento ante una desconexión simulada de Redis. |
+| **Total** | **44** | |
+
 
 ## Declaración del uso de IA
 

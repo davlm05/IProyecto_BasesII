@@ -1,6 +1,8 @@
 from datetime import date, datetime, timezone
 import psycopg
 from psycopg import Connection
+from app.cache import redisTransactions
+from app.cache.redisClient import RedisClientRegistry
 
 from app.config import ApplicationConfig
 from app.db.connectionPools import ConnectionPoolRegistry
@@ -28,6 +30,7 @@ def reserveAppointment(
     professionalID: str,
     serviceID: str,
     startAt: datetime,
+    redisRegistry: RedisClientRegistry,
 ) -> dict:
     def executeReservation() -> dict:
         with openTenantTransaction(pools, requestContext) as connection:
@@ -44,6 +47,10 @@ def reserveAppointment(
     createdAppointment = runWithSerializationRetry(
         config.reservationMaxRetries, executeReservation
     )
+
+    redisTransactions.deleteKey(
+    redisRegistry.getClient(),
+    str(professionalID),)
 
     # AQUI se invalidara la cache de disponibilidad cuando se implemente el
     # modulo 6, y debe hacerse DESPUES del commit: si se invalidara antes y la
@@ -65,6 +72,7 @@ def rescheduleAppointment(
     appointmentID: str,
     newStartAt: datetime,
     newProfessionalID: str | None,
+    redisRegistry: RedisClientRegistry,
 ) -> dict:
     def executeReschedule() -> dict:
         with openTenantTransaction(pools, requestContext) as connection:
@@ -118,6 +126,16 @@ def rescheduleAppointment(
         config.reservationMaxRetries, executeReschedule
     )
 
+    original = rescheduleResult["originalAppointment"]
+    nueva = rescheduleResult["newAppointment"]
+
+    client = redisRegistry.getClient()
+
+    redisTransactions.deleteKey(client, str(original["professionalID"]))
+
+    if str(nueva["professionalID"]) != str(original["professionalID"]):
+        redisTransactions.deleteKey(client, str(nueva["professionalID"]))
+
     # Invalidar la cache de los DOS espacios (el liberado y el tomado) cuando
     # exista el modulo 6. I7 exige que el espacio liberado se vea libre en la
     # siguiente consulta.
@@ -133,6 +151,7 @@ def cancelAppointment(
     requestContext: RequestContext,
     appointmentID: str,
     cancellationReason: str,
+    redisRegistry: RedisClientRegistry,
 ) -> dict:
     with openTenantTransaction(pools, requestContext) as connection:
         existingAppointment = appointmentRepository.findAppointmentByID(
@@ -154,6 +173,11 @@ def cancelAppointment(
             cancelledByUserID=requestContext.userID,
             cancellationReason=cancellationReason,
         )
+
+    redisTransactions.deleteKey(
+    redisRegistry.getClient(),
+    str(cancelledAppointment["professionalID"]),
+    )
 
     # I7: el espacio queda libre en el mismo instante del commit, porque el
     # estado 'cancelled' sale del filtro de las consultas de disponibilidad.
