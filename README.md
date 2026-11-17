@@ -47,3 +47,14 @@ El repositorio de GitHub se debe clonar en su entorno local.
    ```bash
    docker compose down -v
    ```
+
+
+## Declaración del uso de IA
+
+Durante esta etapa se emplearon herramientas de inteligencia artificial como apoyo en tareas puntuales. A continuación se describen sus usos concretos:
+
+   - Apoyo para el desarrollo de pruebas automatizadas.
+   - Análisis de bugs o fallos durante la ejecución de código del proyecto, revisando como interactuan los distintos servicios de PostgreSQL, Redis, Docker Compose y Keycloak.
+   - Se utilizó como apoyo para la escritura correcta y estructurada del README.MD
+
+Todas las pruebas fueron ejecutadas manualmente en el entorno local y se verificó su comportamiento contra los servicios reales de Docker Compose, PostgreSQL y Keycloak. Las decisiones finales sobre la arquitectura, la adaptación al código existente y la validación de los resultados fueron realizadas por el grupo.
